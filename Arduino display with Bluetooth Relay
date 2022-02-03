@@ -1,0 +1,116 @@
+#include <LiquidCrystal.h>
+// Define LCD display pins
+LiquidCrystal lcd(12,11,10,9,8,7);
+
+const int Device1 = 6; // Relay pin 1 (IN1)
+const int Device2 = 5; // Relay pin 2 (IN2)
+const int Device3 = 4; // Relay pin 3 (IN3)
+
+void setup() 
+ {
+  Serial.begin(9600); //Sets the baud for serial data transmission
+  // Set Relay pins as OUTPUT  
+  pinMode(Device1, OUTPUT);
+  pinMode(Device2, OUTPUT);
+  pinMode(Device3, OUTPUT);
+    // Print massage on LCD Display
+    lcd.begin(16,2);
+    lcd.setCursor(2,0);
+    lcd.print("WELLCOME TO ");
+    lcd.setCursor(1,1); 
+    lcd.print("DIGITAL WORLD ");
+    delay(2000);
+    lcd.clear();
+    lcd.print("HOME AUTOMATION ");
+    lcd.setCursor(0,1);
+    lcd.print("USING BLUETOOTH");
+    delay(2000);
+     // Print massage All devics are Off when system is on 
+  lcd.clear();
+  lcd.setCursor(0,0);
+  lcd.print("Rely 1   2   4 ");
+  lcd.setCursor(0,1);
+  lcd.print("    ON  ON  ON ");
+ }
+
+void loop() 
+ {
+  lcd.setCursor(0,0);
+  lcd.print("Rely 1   2   3 ");
+  // Read data from Bluetooth Module
+    if (Serial.available() > 0)
+  { 
+    char Val = Serial.read();
+    // Print Bluetooth Module data on serial monitor
+    Serial.print("VAL: ");
+    Serial.println(Val);
+        //  When Bluetooth Module data "1" then Relay1 ON
+   if (Val == '1')
+     {
+      digitalWrite(Device1,LOW);
+      lcd.setCursor(4,1);
+      lcd.print("ON ");
+      delay(200);
+     }
+         //  When Bluetooth Module data "A" then Relay1 OFF
+   else if (Val=='A')
+     {
+      digitalWrite(Device1,HIGH);
+      lcd.setCursor(4,1);
+      lcd.print("OFF");
+      delay(200);
+     }
+        //  When Bluetooth Module data "2" then Relay2 ON
+   else if (Val=='2')
+     {
+     digitalWrite(Device2,LOW);
+     lcd.setCursor(8,1);
+     lcd.print("ON ");
+     delay(200);
+     }
+        //  When Bluetooth Module data "B" then Relay2 OFF
+   else if (Val=='B')
+     {
+     digitalWrite(Device2,HIGH);
+     lcd.setCursor(8,1);
+     lcd.print("OFF");
+     delay(200);
+     }
+        //  When Bluetooth Module data "3" then Relay3 ON 
+    else if (Val=='3')
+      {
+      digitalWrite(Device3,LOW);
+      lcd.setCursor(12,1);
+      lcd.print("ON ");
+      delay(200);
+      }
+        //  When Bluetooth Module data "C" then Relay3 OFF    
+    else if (Val=='C')
+     {
+     digitalWrite(Device3,HIGH);
+     lcd.setCursor(12,1);
+     lcd.print("OFF");
+     delay(200);
+     }
+        //  When Bluetooth Module data "9" then All Relay ON 
+   else if (Val=='9')
+     { 
+      digitalWrite(Device1, LOW);
+      digitalWrite(Device2, LOW);
+      digitalWrite(Device3, LOW);
+      lcd.setCursor(0,1);
+      lcd.print("    ON  ON  ON ");
+      delay(200); 
+     }
+        //  When Bluetooth Module data "I" then All Relay OFF 
+   else if (Val=='I')
+     {
+      digitalWrite(Device1, HIGH);
+      digitalWrite(Device2, HIGH);
+      digitalWrite(Device3, HIGH);
+      lcd.setCursor(0,1);
+      lcd.print("    OFF OFF OFF");
+      delay(200);
+     }    
+  }
+}
